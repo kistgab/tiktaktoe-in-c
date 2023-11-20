@@ -6,6 +6,7 @@
 #include <locale.h>
 #include <ctype.h>
 #include <stdbool.h>
+#include <time.h>
 
 #define TAMANHO_JOGO_DA_VELHA 3
 #define VALOR_TABULEIRO_JOGADOR 1
@@ -115,17 +116,17 @@ bool ehPosicaoValida(Jogada jogada)
 {
   bool ehLinhaValida = jogada.linha >= 0 && jogada.linha < TAMANHO_JOGO_DA_VELHA;
   bool ehColunaValida = jogada.coluna >= 0 && jogada.coluna < TAMANHO_JOGO_DA_VELHA;
-  return ehColunaValida && ehLinhaValida;
+  return ehColunaValida==true && ehLinhaValida==true;
 }
 
 bool ehJogadaValida(int tabuleiro[][TAMANHO_JOGO_DA_VELHA], Jogada jogada)
 {
-  return ehPosicaoValida(jogada) && ehPosicaoLivre(tabuleiro, jogada);
+  return ehPosicaoValida(jogada)==true && ehPosicaoLivre(tabuleiro, jogada)==true;
 }
 
 int letraParaColuna(char letra)
 {
-  switch (toupper(letra))
+  switch (letra)
   {
   case 'A':
     return 0;
@@ -149,8 +150,7 @@ void realizarJogadaJogador(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
   do
   {
     printf("\n Onde deseja fazer sua jogada (Linha depois Coluna)? ");
-    fflush(stdin);
-    scanf("%d %c", &jogadaAtual.linha, &letraColunaSelecionada);
+    scanf("%d%c", &jogadaAtual.linha, &letraColunaSelecionada);
     jogadaAtual.coluna = letraParaColuna(letraColunaSelecionada);
     jogadaAtual.linha -= 1;
     if (ehJogadaValida(tabuleiro, jogadaAtual))
@@ -180,7 +180,7 @@ void realizarJogadaComputador(int tabuleiro[][3])
 
 void iniciarJogoDaVelha()
 {
-  int tabuleiro[3][3], QuemComeca, JogoTerminou, quantidadeDeJogadas;
+  int tabuleiro[3][3], QuemComeca, JogoTerminou, quantidadeDeJogadas = 0;
 
   preencherTabuleiro(tabuleiro);
   QuemComeca = sortearJogadorParaComecar();
