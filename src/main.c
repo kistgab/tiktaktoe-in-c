@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
-#include <ctype.h>
+#include <strings.h>
 #include <stdbool.h>
 #include <time.h>
 
@@ -67,13 +67,26 @@ void imprimirTabuleiro(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
   }
 }
 
+bool campoEstaPreenchido(int valorCampo)
+{
+  bool campoEstaPreenchido = valorCampo != 0;
+  return campoEstaPreenchido;
+}
+
 bool ganhouNaLinha(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
 {
   for (int i = 0; i < TAMANHO_JOGO_DA_VELHA; i++)
   {
+    bool todosCamposDaLinhaEstaoPreenchidos = campoEstaPreenchido(tabuleiro[i][0]) && campoEstaPreenchido(tabuleiro[i][1]) && campoEstaPreenchido(tabuleiro[i][2]);
+    if (!todosCamposDaLinhaEstaoPreenchidos)
+    {
+      continue;
+    }
     bool todosDaLinhaSaoIguais = tabuleiro[i][0] == tabuleiro[i][1] && tabuleiro[i][1] == tabuleiro[i][2];
     if (todosDaLinhaSaoIguais)
+    {
       return true;
+    }
   }
   return false;
 }
@@ -82,6 +95,11 @@ bool ganhouNaColuna(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
 {
   for (int j = 0; j < TAMANHO_JOGO_DA_VELHA; j++)
   {
+    bool todosCamposDaColunaEstaoPreenchidos = campoEstaPreenchido(tabuleiro[j][0]) && campoEstaPreenchido(tabuleiro[j][1]) && campoEstaPreenchido(tabuleiro[j][2]);
+    if (!todosCamposDaColunaEstaoPreenchidos)
+    {
+      continue;
+    }
     bool todosDaColunaSaoIguais = tabuleiro[0][j] == tabuleiro[1][j] && tabuleiro[1][j] == tabuleiro[2][j];
     if (todosDaColunaSaoIguais)
       return true;
@@ -91,12 +109,22 @@ bool ganhouNaColuna(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
 
 bool ganhouNaDiagonalPrincipal(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
 {
+  bool todosCamposDaDiagonalPrincipalEstaoPreenchidos = campoEstaPreenchido(tabuleiro[0][0]) && campoEstaPreenchido(tabuleiro[1][1]) && campoEstaPreenchido(tabuleiro[2][2]);
+  if (!todosCamposDaDiagonalPrincipalEstaoPreenchidos)
+  {
+    return false;
+  }
   bool todosDaDiagonalSaoIguais = tabuleiro[0][0] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][2];
   return todosDaDiagonalSaoIguais;
 }
 
 bool ganhouNaDiagonalSecundaria(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
 {
+  bool todosCamposDaDiagonalSecundariaEstaoPreenchidos = campoEstaPreenchido(tabuleiro[0][2]) && campoEstaPreenchido(tabuleiro[1][1]) && campoEstaPreenchido(tabuleiro[2][0]);
+  if (!todosCamposDaDiagonalSecundariaEstaoPreenchidos)
+  {
+    return false;
+  }
   bool todosDaDiagonalSaoIguais = tabuleiro[0][2] == tabuleiro[1][1] && tabuleiro[1][1] == tabuleiro[2][0];
   return todosDaDiagonalSaoIguais;
 }
@@ -116,28 +144,30 @@ bool ehPosicaoValida(Jogada jogada)
 {
   bool ehLinhaValida = jogada.linha >= 0 && jogada.linha < TAMANHO_JOGO_DA_VELHA;
   bool ehColunaValida = jogada.coluna >= 0 && jogada.coluna < TAMANHO_JOGO_DA_VELHA;
-  return ehColunaValida==true && ehLinhaValida==true;
+  return ehColunaValida == true && ehLinhaValida == true;
 }
 
 bool ehJogadaValida(int tabuleiro[][TAMANHO_JOGO_DA_VELHA], Jogada jogada)
 {
-  return ehPosicaoValida(jogada)==true && ehPosicaoLivre(tabuleiro, jogada)==true;
+  return ehPosicaoValida(jogada) == true && ehPosicaoLivre(tabuleiro, jogada) == true;
 }
 
 int letraParaColuna(char letra)
 {
-  switch (letra)
+  if (letra == 'A')
   {
-  case 'A':
     return 0;
-    break;
-  case 'B':
+  }
+  if (letra == 'B')
+  {
     return 1;
-    break;
-  case 'C':
+  }
+  if (letra == 'C')
+  {
     return 2;
-    break;
-  default:
+  }
+  else
+  {
     return 999;
   }
 }
@@ -162,7 +192,7 @@ void realizarJogadaJogador(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
   } while (!ehJogadaValida(tabuleiro, jogadaAtual));
 }
 
-void realizarJogadaComputador(int tabuleiro[][3])
+void realizarJogadaComputador(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
 {
   Jogada jogadaAtual;
   bool jogadaComputadorValida = false;
@@ -180,7 +210,7 @@ void realizarJogadaComputador(int tabuleiro[][3])
 
 void iniciarJogoDaVelha()
 {
-  int tabuleiro[3][3], QuemComeca, JogoTerminou, quantidadeDeJogadas = 0;
+  int tabuleiro[TAMANHO_JOGO_DA_VELHA][TAMANHO_JOGO_DA_VELHA], QuemComeca, JogoTerminou, quantidadeDeJogadas = 0;
 
   preencherTabuleiro(tabuleiro);
   QuemComeca = sortearJogadorParaComecar();
@@ -197,10 +227,9 @@ void iniciarJogoDaVelha()
 
   // loop para realizar as jogadas do computador e do jogador
   JogoTerminou = 0;
+  quantidadeDeJogadas = 0;
   while (JogoTerminou == 0)
   {
-    // system("clear");
-    printf("\n");
     imprimirTabuleiro(tabuleiro);
     realizarJogadaJogador(tabuleiro);
     quantidadeDeJogadas++;
