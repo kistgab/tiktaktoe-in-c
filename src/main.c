@@ -224,7 +224,6 @@ void imprimirResultadoFinal(char resultado)
   {
     printf("*       Você ganhou!      *\n");
   }
-
   printf("*                         *\n");
   printf("***************************\n");
 }
