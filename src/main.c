@@ -208,6 +208,27 @@ void realizarJogadaComputador(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
   }
 }
 
+void imprimirResultadoFinal(char resultado)
+{
+  printf("******** RESULTADO ********\n");
+  printf("*                         *\n");
+  if (resultado == 'E')
+  {
+    printf("*      O Jogo empatou!    *\n");
+  }
+  else if (resultado == 'C')
+  {
+    printf("*   O Computador ganhou!  *\n");
+  }
+  else
+  {
+    printf("*       Você ganhou!      *\n");
+  }
+
+  printf("*                         *\n");
+  printf("***************************\n");
+}
+
 void iniciarJogoDaVelha()
 {
   int tabuleiro[TAMANHO_JOGO_DA_VELHA][TAMANHO_JOGO_DA_VELHA], QuemComeca, JogoTerminou, quantidadeDeJogadas = 0;
@@ -236,11 +257,20 @@ void iniciarJogoDaVelha()
     JogoTerminou = jogoDeveTerminar(tabuleiro, quantidadeDeJogadas);
     if (JogoTerminou)
     {
+      imprimirResultadoFinal('J');
       break;
     }
     realizarJogadaComputador(tabuleiro);
     quantidadeDeJogadas++;
     JogoTerminou = jogoDeveTerminar(tabuleiro, quantidadeDeJogadas);
+    if (JogoTerminou)
+    {
+      imprimirResultadoFinal('C');
+    }
+  }
+  if (quantidadeDeJogadas == 9)
+  {
+    imprimirResultadoFinal('E');
   }
 }
 
