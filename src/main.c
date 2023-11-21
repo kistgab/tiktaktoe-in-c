@@ -129,10 +129,10 @@ bool ganhouNaDiagonalSecundaria(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
   return todosDaDiagonalSaoIguais;
 }
 
-bool jogoDeveTerminar(int tabuleiro[][TAMANHO_JOGO_DA_VELHA], int quantidadeDeJogadas)
+bool jogoTerminouPorAlguemGanhar(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
 {
   bool alguemGanhou = ganhouNaLinha(tabuleiro) || ganhouNaColuna(tabuleiro) || ganhouNaDiagonalPrincipal(tabuleiro) || ganhouNaDiagonalSecundaria(tabuleiro);
-  return alguemGanhou || quantidadeDeJogadas == 9;
+  return alguemGanhou;
 }
 
 bool ehPosicaoLivre(int tabuleiro[][TAMANHO_JOGO_DA_VELHA], Jogada jogada)
@@ -194,18 +194,23 @@ void realizarJogadaJogador(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
 
 void realizarJogadaComputador(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
 {
-  Jogada jogadaAtual;
-  bool jogadaComputadorValida = false;
-  while (!jogadaComputadorValida)
+  int totalJogadasRestantes = 0;
+  Jogada jogadasRestantes[9];
+  for (int i = 0; i < TAMANHO_JOGO_DA_VELHA; i++)
   {
-    jogadaAtual.coluna = sortearNumeroInteiro(TAMANHO_JOGO_DA_VELHA);
-    jogadaAtual.linha = sortearNumeroInteiro(TAMANHO_JOGO_DA_VELHA);
-    if (ehPosicaoLivre(tabuleiro, jogadaAtual))
+    for (int j = 0; j < TAMANHO_JOGO_DA_VELHA; j++)
     {
-      tabuleiro[jogadaAtual.linha][jogadaAtual.coluna] = 2;
-      jogadaComputadorValida = true;
+      if (tabuleiro[i][j] == 0)
+      {
+        jogadasRestantes[totalJogadasRestantes].linha = i;
+        jogadasRestantes[totalJogadasRestantes].coluna = j;
+        totalJogadasRestantes++;
+      }
     }
   }
+  int posicaoJogadaSorteada = sortearNumeroInteiro(totalJogadasRestantes);
+  Jogada jogadaSorteada = jogadasRestantes[posicaoJogadaSorteada];
+  tabuleiro[jogadaSorteada.linha][jogadaSorteada.coluna] = VALOR_TABULEIRO_COMPUTADOR;
 }
 
 void imprimirResultadoFinal(char resultado)
@@ -230,7 +235,8 @@ void imprimirResultadoFinal(char resultado)
 
 void iniciarJogoDaVelha()
 {
-  int tabuleiro[TAMANHO_JOGO_DA_VELHA][TAMANHO_JOGO_DA_VELHA], QuemComeca, JogoTerminou, quantidadeDeJogadas = 0;
+  int tabuleiro[TAMANHO_JOGO_DA_VELHA][TAMANHO_JOGO_DA_VELHA], QuemComeca, quantidadeDeJogadas = 0;
+  bool alguemGanhou;
 
   preencherTabuleiro(tabuleiro);
   QuemComeca = sortearJogadorParaComecar();
@@ -246,28 +252,29 @@ void iniciarJogoDaVelha()
   }
 
   // loop para realizar as jogadas do computador e do jogador
-  JogoTerminou = 0;
+  alguemGanhou;
   quantidadeDeJogadas = 0;
-  while (JogoTerminou == 0)
+  while (!alguemGanhou)
   {
     imprimirTabuleiro(tabuleiro);
     realizarJogadaJogador(tabuleiro);
     quantidadeDeJogadas++;
-    JogoTerminou = jogoDeveTerminar(tabuleiro, quantidadeDeJogadas);
-    if (JogoTerminou)
+    alguemGanhou = jogoTerminouPorAlguemGanhar(tabuleiro);
+    if (alguemGanhou)
     {
       imprimirResultadoFinal('J');
       break;
     }
     realizarJogadaComputador(tabuleiro);
+    imprimirTabuleiro(tabuleiro);
     quantidadeDeJogadas++;
-    JogoTerminou = jogoDeveTerminar(tabuleiro, quantidadeDeJogadas);
-    if (JogoTerminou)
+    alguemGanhou = jogoTerminouPorAlguemGanhar(tabuleiro);
+    if (alguemGanhou)
     {
       imprimirResultadoFinal('C');
     }
   }
-  if (quantidadeDeJogadas == 9)
+  if (quantidadeDeJogadas == 9 && !alguemGanhou)
   {
     imprimirResultadoFinal('E');
   }
