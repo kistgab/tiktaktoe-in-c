@@ -239,27 +239,27 @@ void imprimirResultadoFinal(char resultado)
 void iniciarJogoDaVelha()
 {
   int tabuleiro[TAMANHO_JOGO_DA_VELHA][TAMANHO_JOGO_DA_VELHA], QuemComeca, quantidadeDeJogadas = 0;
-  bool alguemGanhou;
+  bool alguemGanhou = false;
 
   preencherTabuleiro(tabuleiro);
   QuemComeca = sortearJogadorParaComecar();
-//  QuemComeca = 1; Codigo usado para debug apenas, deve ser removido
   if (QuemComeca == 0)
   {
     printf("\n Você Começa!(Você é X) \n \n");
+    imprimirTabuleiro(tabuleiro);
   }
   else
   {
     printf("\n O Computador Começa!(Ele é Bolinha) \n \n");
     realizarJogadaComputador(tabuleiro);
+    imprimirTabuleiro(tabuleiro);
   }
 
   // loop para realizar as jogadas do computador e do jogador
-  quantidadeDeJogadas = 0;
-  while (!alguemGanhou)
+  while (!alguemGanhou && quantidadeDeJogadas<9)
   {
-    imprimirTabuleiro(tabuleiro);
     realizarJogadaJogador(tabuleiro);
+    imprimirTabuleiro(tabuleiro);
     quantidadeDeJogadas++;
     alguemGanhou = jogoTerminouPorAlguemGanhar(tabuleiro);
     if (alguemGanhou)
@@ -267,8 +267,8 @@ void iniciarJogoDaVelha()
         imprimirResultadoFinal('J');
       break;
     }
-    imprimirTabuleiro(tabuleiro);
     realizarJogadaComputador(tabuleiro);
+    imprimirTabuleiro(tabuleiro);
     quantidadeDeJogadas++;
     alguemGanhou = jogoTerminouPorAlguemGanhar(tabuleiro);
     if (alguemGanhou)
@@ -276,7 +276,7 @@ void iniciarJogoDaVelha()
       imprimirResultadoFinal('C');
     }
   }
-  if (quantidadeDeJogadas == 9 && !alguemGanhou)
+  if (!alguemGanhou)
   {
     imprimirResultadoFinal('E');
   }
@@ -285,7 +285,7 @@ void iniciarJogoDaVelha()
 int main()
 {
   setlocale(LC_ALL, "Portuguese");
-  int EscolherOpcao;
+  int EscolherOpcao = -1;
 
   while (EscolherOpcao != 2)
   {
