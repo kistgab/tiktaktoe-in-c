@@ -96,7 +96,7 @@ bool ganhouNaColuna(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
 {
   for (int j = 0; j < TAMANHO_JOGO_DA_VELHA; j++)
   {
-    bool todosCamposDaColunaEstaoPreenchidos = campoEstaPreenchido(tabuleiro[j][0]) && campoEstaPreenchido(tabuleiro[j][1]) && campoEstaPreenchido(tabuleiro[j][2]);
+    bool todosCamposDaColunaEstaoPreenchidos = campoEstaPreenchido(tabuleiro[0][j]) && campoEstaPreenchido(tabuleiro[1][j]) && campoEstaPreenchido(tabuleiro[2][j]);
     if (!todosCamposDaColunaEstaoPreenchidos)
     {
       continue;
@@ -212,7 +212,7 @@ void realizarJogadaComputador(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
   int posicaoJogadaSorteada = sortearNumeroInteiro(totalJogadasRestantes);
   Jogada jogadaSorteada = jogadasRestantes[posicaoJogadaSorteada];
   tabuleiro[jogadaSorteada.linha][jogadaSorteada.coluna] = VALOR_TABULEIRO_COMPUTADOR;
-    sleep(1); // 1 segundo
+  sleep(1); // 1 segundo
   printf("\n Jogada do Computador: \n \n");
 }
 
@@ -242,21 +242,22 @@ void iniciarJogoDaVelha()
   bool alguemGanhou = false;
 
   preencherTabuleiro(tabuleiro);
+
   QuemComeca = sortearJogadorParaComecar();
   if (QuemComeca == 0)
   {
     printf("\n Você Começa!(Você é X) \n \n");
-    imprimirTabuleiro(tabuleiro);
   }
   else
   {
     printf("\n O Computador Começa!(Ele é Bolinha) \n \n");
     realizarJogadaComputador(tabuleiro);
-    imprimirTabuleiro(tabuleiro);
+    quantidadeDeJogadas++;
   }
+  imprimirTabuleiro(tabuleiro);
 
   // loop para realizar as jogadas do computador e do jogador
-  while (!alguemGanhou && quantidadeDeJogadas<9)
+  while (!alguemGanhou && quantidadeDeJogadas < 9)
   {
     realizarJogadaJogador(tabuleiro);
     imprimirTabuleiro(tabuleiro);
@@ -264,7 +265,7 @@ void iniciarJogoDaVelha()
     alguemGanhou = jogoTerminouPorAlguemGanhar(tabuleiro);
     if (alguemGanhou)
     {
-        imprimirResultadoFinal('J');
+      imprimirResultadoFinal('J');
       break;
     }
     realizarJogadaComputador(tabuleiro);
