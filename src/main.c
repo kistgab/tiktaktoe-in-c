@@ -1,5 +1,8 @@
-/* Trabalho PRP - A
-   Dupla: Arthur Brixius da Costa e Matheus Barreto */
+/*
+Trabalho PRP - A
+  Primeira Dupla: Arthur Brixius da Costa e Matheus Barreto
+  Segunda Dupla: Gabriel Kist e Guilherme Neis
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
