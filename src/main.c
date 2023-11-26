@@ -7,6 +7,7 @@
 #include <strings.h>
 #include <stdbool.h>
 #include <time.h>
+#include <unistd.h>
 
 #define TAMANHO_JOGO_DA_VELHA 3
 #define VALOR_TABULEIRO_JOGADOR 1
@@ -211,6 +212,8 @@ void realizarJogadaComputador(int tabuleiro[][TAMANHO_JOGO_DA_VELHA])
   int posicaoJogadaSorteada = sortearNumeroInteiro(totalJogadasRestantes);
   Jogada jogadaSorteada = jogadasRestantes[posicaoJogadaSorteada];
   tabuleiro[jogadaSorteada.linha][jogadaSorteada.coluna] = VALOR_TABULEIRO_COMPUTADOR;
+    sleep(1); // 1 segundo
+  printf("\n Jogada do Computador: \n \n");
 }
 
 void imprimirResultadoFinal(char resultado)
@@ -240,6 +243,7 @@ void iniciarJogoDaVelha()
 
   preencherTabuleiro(tabuleiro);
   QuemComeca = sortearJogadorParaComecar();
+//  QuemComeca = 1; Codigo usado para debug apenas, deve ser removido
   if (QuemComeca == 0)
   {
     printf("\n Você Começa!(Você é X) \n \n");
@@ -248,11 +252,9 @@ void iniciarJogoDaVelha()
   {
     printf("\n O Computador Começa!(Ele é Bolinha) \n \n");
     realizarJogadaComputador(tabuleiro);
-    imprimirTabuleiro(tabuleiro);
   }
 
   // loop para realizar as jogadas do computador e do jogador
-  alguemGanhou;
   quantidadeDeJogadas = 0;
   while (!alguemGanhou)
   {
@@ -262,11 +264,11 @@ void iniciarJogoDaVelha()
     alguemGanhou = jogoTerminouPorAlguemGanhar(tabuleiro);
     if (alguemGanhou)
     {
-      imprimirResultadoFinal('J');
+        imprimirResultadoFinal('J');
       break;
     }
-    realizarJogadaComputador(tabuleiro);
     imprimirTabuleiro(tabuleiro);
+    realizarJogadaComputador(tabuleiro);
     quantidadeDeJogadas++;
     alguemGanhou = jogoTerminouPorAlguemGanhar(tabuleiro);
     if (alguemGanhou)
